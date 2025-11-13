@@ -2,13 +2,76 @@
 
 ## 🎉 What's Been Built
 
-Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform. Here's everything that's been added:
+Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform with **10 major features**. Here's everything that's been added:
 
 ---
 
 ## ✨ Major New Features
 
-### 1. 🔔 Toast Notification System
+### 1. ⏰ Scheduled Posts
+**What it is:** Schedule your content to publish at a specific date and time.
+
+**Features:**
+- Date picker with minimum date validation
+- Time picker (24-hour format)
+- Purple "Schedule" button on create form
+- 3-button layout: Draft | Schedule | Post Now
+- Validates scheduled time is in the future
+- Toast notification shows scheduled time
+- Posts saved with "scheduled" status
+- Future-ready for automated publishing
+
+**Why it matters:** Batch create content on Sunday, schedule the week ahead. Essential for consistent posting.
+
+---
+
+### 2. 📈 Quick Stats Widget
+**What it is:** At-a-glance performance comparison on the dashboard.
+
+**Features:**
+- Beautiful gradient card (primary blue)
+- This week vs last week comparison
+- **Posts Published:** Shows delta and % change
+- **New Followers:** Shows growth and % change
+- Up/down arrows for visual feedback
+- Smart insights based on performance
+- Encouragement messages
+
+**Why it matters:** Motivates consistency with instant progress visibility. Gamifies the creation process.
+
+---
+
+### 3. 📋 Duplicate Post Feature
+**What it is:** One-click duplication of any draft or published post.
+
+**Features:**
+- Blue "Duplicate" button on drafts table
+- Pre-fills create form with all content
+- Copies text, type, and media URL
+- Toast confirmation message
+- Perfect for repurposing content
+- Works for cross-platform posting
+
+**Why it matters:** Saves hours when creating similar content or adapting posts for different platforms.
+
+---
+
+### 4. ⚡ Loading Skeletons
+**What it is:** Professional loading states for all major pages.
+
+**Features:**
+- 5 pre-built skeleton components
+- Smooth pulse animation
+- Matches actual page layout
+- DashboardSkeleton, AnalyticsSkeleton, DraftsListSkeleton
+- CardSkeleton and TableRowSkeleton for custom use
+- Perceived performance boost
+
+**Why it matters:** Makes the app feel instant and professional, even during data loading.
+
+---
+
+### 5. 🔔 Toast Notification System
 **What it is:** A beautiful, animated notification system for instant user feedback.
 
 **Features:**
@@ -23,7 +86,7 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
-### 2. 📝 Drafts Management Page (`/drafts`)
+### 6. 📝 Drafts Management Page (`/drafts`)
 **What it is:** A complete drafts management system.
 
 **Features:**
@@ -39,7 +102,7 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
-### 3. 📊 Analytics Dashboard (`/analytics`)
+### 7. 📊 Analytics Dashboard (`/analytics`)
 **What it is:** A visual analytics page with charts and insights.
 
 **Features:**
@@ -64,7 +127,7 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
-### 4. 🔢 Platform-Specific Character Limits
+### 8. 🔢 Platform-Specific Character Limits
 **What it is:** Smart validation for platform-specific character limits.
 
 **Features:**
@@ -88,7 +151,7 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
-### 5. 📋 Content Templates Library
+### 9. 📋 Content Templates Library
 **What it is:** 12 pre-made content templates to jumpstart creation.
 
 **5 Categories:**
@@ -123,7 +186,7 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
-### 6. 🌱 Seed Data Script
+### 10. 🌱 Seed Data Script
 **What it is:** A script to populate the database with realistic demo data.
 
 **What it creates:**
@@ -267,6 +330,27 @@ Or create your own account!
 5. See the error message
 6. Notice publish button is disabled
 
+### 5. Schedule a Post
+1. Go to `/create`
+2. Write your content
+3. Select date (tomorrow) and time
+4. Click "Schedule" button (purple)
+5. See success toast with scheduled time
+6. Check dashboard - post has "scheduled" status
+
+### 6. Quick Stats
+1. Open dashboard
+2. See the gradient blue card at top
+3. Compare this week vs last week
+4. Read the smart insight message
+
+### 7. Duplicate a Draft
+1. Go to `/drafts`
+2. Find any draft
+3. Click "Duplicate" (blue button)
+4. Edit the duplicated content
+5. Save or publish
+
 ---
 
 ## 📈 What Makes This Production-Ready
@@ -351,31 +435,41 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 
 ## 📊 Stats
 
-- **Total Files:** 60+
-- **New Components:** 8
-- **New Pages:** 2
-- **API Endpoints:** 14+
-- **Templates:** 12
+- **Total Features:** 10 major features
+- **Total Files:** 66+
+- **New Components:** 11 (Toast, Templates, Charts, Quick Stats, Skeletons, etc.)
+- **New Pages:** 2 (Analytics, Drafts)
+- **API Endpoints:** 15+
+- **Templates:** 12 pre-made templates
+- **Loading States:** 5 skeleton components
 - **Character Limits:** Platform-specific for 3 platforms
-- **Chart Types:** 3
-- **Notification Types:** 4
+- **Chart Types:** 3 animated charts
+- **Notification Types:** 4 toast types
 
 ---
 
 ## 💡 Tips for Using the App
 
-1. **Start with Templates:** Use the template picker to create your first few posts quickly
-2. **Save Drafts Often:** Don't lose your work - save as draft early and often
-3. **Watch Character Limits:** Pay attention to the color-coded counter
-4. **Use Batch Delete:** Select multiple drafts at once to clean up quickly
-5. **Check Analytics Weekly:** See your growth trends over time
-6. **Promote Ideas:** Capture ideas in the inbox, then promote them when ready
+1. **Schedule Your Week:** Sunday batch creation - schedule Monday-Friday posts at once
+2. **Start with Templates:** Use the template picker to create your first few posts quickly
+3. **Duplicate for Variants:** Create one great post, then duplicate and adapt for each platform
+4. **Watch the Quick Stats:** Check weekly progress to stay motivated
+5. **Save Drafts Often:** Don't lose your work - save as draft early and often
+6. **Watch Character Limits:** Pay attention to the color-coded counter
+7. **Use Batch Delete:** Select multiple drafts at once to clean up quickly
+8. **Check Analytics Weekly:** See your growth trends over time
+9. **Promote Ideas:** Capture ideas in the inbox, then promote them when ready
+10. **Track Your Streak:** Post consistently to build and maintain your streak
 
 ---
 
 ## 🙏 Final Notes
 
-This MVP now has:
+This MVP now has **10 major features** including:
+- **Scheduled Posts** for planning ahead
+- **Quick Stats Widget** for weekly motivation
+- **Duplicate Feature** for content repurposing
+- **Loading States** for professional UX
 - **Professional UX** with toast notifications and validation
 - **Productivity features** like templates and drafts management
 - **Data visualization** with analytics charts
@@ -385,13 +479,19 @@ This MVP now has:
 Everything is committed and pushed to your branch:
 `claude/createdonotconsume-mvp-011CV5kiDjK6cgocegTJejEW`
 
+**Latest commits:**
+1. Initial MVP implementation
+2. Production-ready features (toast, drafts, analytics, limits, templates)
+3. Feature documentation
+4. **NEW: Scheduled posts, quick stats, duplicate, loading states**
+
 **You can now:**
 1. Pull the latest changes
 2. Run `npm install && npm run db:push && npm run db:seed`
-3. Start creating content!
+3. Start creating and scheduling content!
 
 ---
 
 **Create. Don't Consume.** 🚀
 
-Enjoy exploring your enhanced creator platform!
+Your creator platform is now production-ready with scheduling, analytics, and smart workflows!
