@@ -2,7 +2,7 @@
 
 ## 🎉 What's Been Built
 
-Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform with **10 major features**. Here's everything that's been added:
+Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform with **12 major features**. Here's everything that's been added:
 
 ---
 
@@ -206,6 +206,49 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ---
 
+### 11. 📅 Content Calendar (`/calendar`)
+**What it is:** A visual monthly calendar showing all scheduled and published content.
+
+**Features:**
+- Monthly calendar grid with full navigation
+- Color-coded posts by platform (Blue: X, Pink: Instagram, Red: YouTube)
+- Visual indicators for post status (⏰ Scheduled, ✓ Published)
+- Shows up to 3 posts per day with overflow count
+- "Today" button for quick navigation
+- Previous/Next month navigation arrows
+- Click posts to navigate to drafts page
+- Platform legend for easy identification
+- Quick action cards linking to Drafts, Create, and Analytics
+
+**Why it matters:** Plan your content strategy visually, identify gaps in posting schedule, and ensure consistent cross-platform presence at a glance.
+
+---
+
+### 12. 🧵 Thread Composer
+**What it is:** Create multi-post threads for any platform with advanced composition tools.
+
+**Features:**
+- **Tab-based interface** - Switch between Single Post and Thread modes
+- **Platform selection** - Choose X, Instagram, or YouTube for thread
+- **Dynamic post management:**
+  - Add unlimited posts to thread
+  - Remove posts (minimum 1 required)
+  - Reorder with up/down buttons
+  - Position indicators (1/5, 2/5, etc.)
+- **Per-post character limits** - Each post validated independently
+- **Visual feedback:**
+  - Color-coded character counts
+  - Over-limit warnings per post
+  - Purple theme for threads
+- **Batch operations:**
+  - Save entire thread as draft
+  - Publish all posts at once
+  - Thread metadata preserved
+
+**Why it matters:** Perfect for X/Twitter threads, Instagram carousels, or YouTube video series. Create coherent multi-part narratives without switching contexts.
+
+---
+
 ## 🔧 Improvements to Existing Features
 
 ### Enhanced Create Form
@@ -217,9 +260,10 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ### Updated Navigation
 - Added "Drafts" link
+- Added "Calendar" link
 - Added "Analytics" link
 - Better visual hierarchy
-- 6 main sections now
+- 7 main sections now: Dashboard, Create, Ideas, Drafts, Calendar, Analytics, Settings
 
 ### Better Error Handling
 - Toast notifications replace inline messages
@@ -231,10 +275,11 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
 
 ## 📦 What's Included
 
-### New Files Created (22 files changed)
+### New Files Created (29 files changed)
 ```
 app/(authenticated)/
   ├── analytics/page.tsx          # Analytics dashboard
+  ├── calendar/page.tsx            # Content calendar
   └── drafts/page.tsx              # Drafts management
 
 app/api/content/drafts/
@@ -245,9 +290,13 @@ app/api/content/drafts/
 components/
   ├── Toast.tsx                    # Toast notification UI
   ├── TemplatesPicker.tsx          # Template modal
+  ├── ContentCalendar.tsx          # Calendar grid component
+  ├── ThreadComposer.tsx           # Thread creation tool
+  ├── CreateWrapper.tsx            # Single/Thread mode switcher
   ├── AnalyticsCharts.tsx          # Chart visualizations
   ├── PlatformBreakdown.tsx        # Platform stats
   ├── DraftsList.tsx               # Drafts table
+  ├── LoadingSkeleton.tsx          # Loading states
   └── Providers.tsx                # Context providers
 
 contexts/
@@ -351,6 +400,28 @@ Or create your own account!
 4. Edit the duplicated content
 5. Save or publish
 
+### 8. Content Calendar
+1. Go to `/calendar`
+2. See the current month with all posts
+3. Navigate to next/previous months
+4. Click "Today" to return to current date
+5. Observe color coding by platform
+6. Click any post to navigate to drafts
+7. Notice scheduled (⏰) vs published (✓) indicators
+8. Use quick action cards to create new content
+
+### 9. Thread Composer
+1. Go to `/create`
+2. Click the "Thread" tab at the top
+3. Select a platform (X, Instagram, or YouTube)
+4. Write your first post
+5. Click "Add Another Post" to continue the thread
+6. Write 3-5 posts in sequence
+7. Use up/down arrows to reorder posts
+8. Watch character limits per post
+9. Click "Save as Draft" or "Publish Thread"
+10. Check dashboard - all posts created with thread metadata
+
 ---
 
 ## 📈 What Makes This Production-Ready
@@ -421,9 +492,9 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 
 ### Short-term (Next week)
 - [ ] Add real OAuth for X/Instagram/YouTube
-- [ ] Implement scheduled posts
-- [ ] Add content calendar view
+- [ ] Implement automated scheduled post publishing
 - [ ] Export analytics to CSV
+- [ ] Add thread view on dashboard
 
 ### Long-term (Next month)
 - [ ] Team collaboration features
@@ -435,16 +506,17 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 
 ## 📊 Stats
 
-- **Total Features:** 10 major features
-- **Total Files:** 66+
-- **New Components:** 11 (Toast, Templates, Charts, Quick Stats, Skeletons, etc.)
-- **New Pages:** 2 (Analytics, Drafts)
+- **Total Features:** 12 major features
+- **Total Files:** 70+
+- **New Components:** 14 (Toast, Templates, Calendar, Thread, Charts, Quick Stats, Skeletons, etc.)
+- **New Pages:** 3 (Analytics, Drafts, Calendar)
 - **API Endpoints:** 15+
 - **Templates:** 12 pre-made templates
 - **Loading States:** 5 skeleton components
 - **Character Limits:** Platform-specific for 3 platforms
 - **Chart Types:** 3 animated charts
 - **Notification Types:** 4 toast types
+- **Navigation Sections:** 7 main sections
 
 ---
 
@@ -460,13 +532,17 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 8. **Check Analytics Weekly:** See your growth trends over time
 9. **Promote Ideas:** Capture ideas in the inbox, then promote them when ready
 10. **Track Your Streak:** Post consistently to build and maintain your streak
+11. **Use the Calendar:** Review your calendar weekly to spot gaps in your posting schedule
+12. **Create Threads:** Use thread mode for long-form content that needs multiple posts
 
 ---
 
 ## 🙏 Final Notes
 
-This MVP now has **10 major features** including:
+This MVP now has **12 major features** including:
 - **Scheduled Posts** for planning ahead
+- **Content Calendar** for visual planning
+- **Thread Composer** for multi-post narratives
 - **Quick Stats Widget** for weekly motivation
 - **Duplicate Feature** for content repurposing
 - **Loading States** for professional UX
@@ -483,15 +559,16 @@ Everything is committed and pushed to your branch:
 1. Initial MVP implementation
 2. Production-ready features (toast, drafts, analytics, limits, templates)
 3. Feature documentation
-4. **NEW: Scheduled posts, quick stats, duplicate, loading states**
+4. Scheduled posts, quick stats, duplicate, loading states
+5. **NEW: Content Calendar and Thread Composer**
 
 **You can now:**
 1. Pull the latest changes
 2. Run `npm install && npm run db:push && npm run db:seed`
-3. Start creating and scheduling content!
+3. Start creating, scheduling, and planning content with threads and calendar!
 
 ---
 
 **Create. Don't Consume.** 🚀
 
-Your creator platform is now production-ready with scheduling, analytics, and smart workflows!
+Your creator platform is now production-ready with scheduling, calendar planning, thread composition, analytics, and smart workflows!
