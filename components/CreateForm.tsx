@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-
-type Platform = 'x' | 'instagram' | 'youtube'
+import { useToast } from '@/contexts/ToastContext'
+import { PLATFORM_LIMITS, getStrictestLimit, validateContent, type Platform } from '@/lib/platformLimits'
+import TemplatesPicker from './TemplatesPicker'
+import type { ContentTemplate } from '@/lib/contentTemplates'
 
 const platformLabels: Record<Platform, string> = {
   x: 'X (Twitter)',
@@ -18,12 +20,12 @@ interface CreateFormProps {
 
 export default function CreateForm({ initialText = '', initialType = '' }: CreateFormProps) {
   const router = useRouter()
+  const { showToast } = useToast()
   const [text, setText] = useState(initialText)
   const [mediaUrl, setMediaUrl] = useState('')
   const [type, setType] = useState(initialType)
   const [platforms, setPlatforms] = useState<Platform[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handlePlatformToggle = (platform: Platform) => {
     setPlatforms((prev) =>
@@ -33,19 +35,47 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
     )
   }
 
+  const handleTemplateSelect = (template: ContentTemplate) => {
+    setText(template.content)
+    if (template.type) {
+      setType(template.type)
+    }
+    if (template.platforms.length > 0) {
+      setPlatforms(template.platforms as Platform[])
+    }
+    showToast('Template applied! Customize it to your needs.', 'success')
+  }
+
+  // Calculate character limit and validation
+  const validation = useMemo(() => {
+    return validateContent(text, platforms)
+  }, [text, platforms])
+
+  const strictestLimit = useMemo(() => {
+    return platforms.length > 0 ? getStrictestLimit(platforms) : null
+  }, [platforms])
+
+  const characterColor = useMemo(() => {
+    if (!strictestLimit) return 'text-gray-500'
+    const percentage = (text.length / strictestLimit) * 100
+    if (percentage >= 100) return 'text-red-600 font-bold'
+    if (percentage >= 90) return 'text-orange-600 font-semibold'
+    if (percentage >= 75) return 'text-yellow-600'
+    return 'text-gray-500'
+  }, [text.length, strictestLimit])
+
   const handleSaveDraft = async () => {
     if (!text.trim()) {
-      setMessage({ type: 'error', text: 'Please enter some content' })
+      showToast('Please enter some content', 'error')
       return
     }
 
     if (platforms.length === 0) {
-      setMessage({ type: 'error', text: 'Please select at least one platform' })
+      showToast('Please select at least one platform', 'error')
       return
     }
 
     setIsSubmitting(true)
-    setMessage(null)
 
     try {
       const res = await fetch('/api/content/draft', {
@@ -63,18 +93,18 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
         throw new Error('Failed to save draft')
       }
 
-      setMessage({ type: 'success', text: 'Draft saved successfully!' })
+      showToast('Draft saved successfully!', 'success')
       setText('')
       setMediaUrl('')
       setType('')
       setPlatforms([])
 
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/drafts')
       }, 1000)
     } catch (error) {
       console.error('Error saving draft:', error)
-      setMessage({ type: 'error', text: 'Failed to save draft' })
+      showToast('Failed to save draft', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -82,17 +112,21 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
 
   const handlePostNow = async () => {
     if (!text.trim()) {
-      setMessage({ type: 'error', text: 'Please enter some content' })
+      showToast('Please enter some content', 'error')
       return
     }
 
     if (platforms.length === 0) {
-      setMessage({ type: 'error', text: 'Please select at least one platform' })
+      showToast('Please select at least one platform', 'error')
+      return
+    }
+
+    if (!validation.valid) {
+      showToast(validation.errors[0], 'error')
       return
     }
 
     setIsSubmitting(true)
-    setMessage(null)
 
     try {
       const res = await fetch('/api/content/publish', {
@@ -112,10 +146,7 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
         throw new Error(data.error || 'Failed to publish')
       }
 
-      setMessage({
-        type: 'success',
-        text: `Successfully published to ${platforms.length} platform(s)!`
-      })
+      showToast(`Successfully published to ${platforms.length} platform(s)!`, 'success')
       setText('')
       setMediaUrl('')
       setType('')
@@ -126,10 +157,7 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
       }, 1500)
     } catch (error) {
       console.error('Error publishing:', error)
-      setMessage({
-        type: 'error',
-        text: error instanceof Error ? error.message : 'Failed to publish'
-      })
+      showToast(error instanceof Error ? error.message : 'Failed to publish', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -137,19 +165,16 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      {message && (
-        <div
-          className={`mb-4 p-4 rounded-md ${
-            message.type === 'success'
-              ? 'bg-green-50 text-green-800'
-              : 'bg-red-50 text-red-800'
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
-
       <div className="space-y-6">
+        {/* Templates */}
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <div>
+            <h3 className="text-sm font-medium text-gray-900">Start with a template</h3>
+            <p className="text-xs text-gray-500 mt-1">Choose from pre-made templates to save time</p>
+          </div>
+          <TemplatesPicker onSelect={handleTemplateSelect} />
+        </div>
+
         {/* Platform Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -157,15 +182,20 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
           </label>
           <div className="space-y-2">
             {(Object.keys(platformLabels) as Platform[]).map((platform) => (
-              <label key={platform} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={platforms.includes(platform)}
-                  onChange={() => handlePlatformToggle(platform)}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-900">
-                  {platformLabels[platform]}
+              <label key={platform} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={platforms.includes(platform)}
+                    onChange={() => handlePlatformToggle(platform)}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-sm text-gray-900">
+                    {platformLabels[platform]}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500">
+                  {PLATFORM_LIMITS[platform].characterLimit} char limit
                 </span>
               </label>
             ))}
@@ -180,12 +210,29 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
           <textarea
             id="text"
             rows={6}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border p-2"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:ring-primary-500 sm:text-sm border p-2 ${
+              validation.errors.length > 0
+                ? 'border-red-300 focus:border-red-500'
+                : 'border-gray-300 focus:border-primary-500'
+            }`}
             placeholder="What do you want to share?"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <p className="mt-1 text-sm text-gray-500">{text.length} characters</p>
+          <div className="mt-1 flex items-center justify-between">
+            <div>
+              {validation.errors.length > 0 && (
+                <p className="text-sm text-red-600">{validation.errors[0]}</p>
+              )}
+              {validation.errors.length === 0 && validation.warnings.length > 0 && (
+                <p className="text-sm text-yellow-600">{validation.warnings[0]}</p>
+              )}
+            </div>
+            <p className={`text-sm ${characterColor}`}>
+              {text.length}
+              {strictestLimit && ` / ${strictestLimit}`} characters
+            </p>
+          </div>
         </div>
 
         {/* Media URL */}
@@ -234,7 +281,7 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
           </button>
           <button
             onClick={handlePostNow}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !validation.valid}
             className="flex-1 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
           >
             {isSubmitting ? 'Publishing...' : 'Post Now'}

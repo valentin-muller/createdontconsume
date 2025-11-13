@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { verifySessionToken } from './lib/auth'
 
 const publicPaths = ['/login', '/register']
-const protectedPaths = ['/dashboard', '/create', '/ideas', '/settings']
+const protectedPaths = ['/dashboard', '/create', '/ideas', '/drafts', '/analytics', '/settings']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -35,5 +35,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/register', '/dashboard/:path*', '/create/:path*', '/ideas/:path*', '/settings/:path*'],
+  matcher: ['/', '/login', '/register', '/dashboard/:path*', '/create/:path*', '/ideas/:path*', '/drafts/:path*', '/analytics/:path*', '/settings/:path*'],
 }
