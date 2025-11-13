@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import CreateForm from '@/components/CreateForm'
+import CreateWrapper from '@/components/CreateWrapper'
 
 export default async function CreatePage({
   searchParams,
@@ -19,13 +19,13 @@ export default async function CreatePage({
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900">Create Content</h1>
           <p className="mt-2 text-sm text-gray-700">
-            Compose and publish your content to multiple platforms.
+            Compose single posts or multi-post threads for any platform.
           </p>
         </div>
       </div>
 
       <div className="mt-8">
-        <CreateForm initialText={searchParams.text} initialType={searchParams.type} />
+        <CreateWrapper initialText={searchParams.text} initialType={searchParams.type} />
       </div>
     </div>
   )
