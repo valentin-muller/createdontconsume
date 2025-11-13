@@ -74,6 +74,16 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
     }
   }
 
+  const handleDuplicate = (draft: Draft) => {
+    const params = new URLSearchParams({
+      text: draft.text,
+      type: draft.type || '',
+      mediaUrl: draft.mediaUrl || '',
+    })
+    showToast('Draft duplicated! Edit and save or publish.', 'success')
+    router.push(`/create?${params.toString()}`)
+  }
+
   const handleBatchDelete = async () => {
     if (selectedDrafts.size === 0) return
     if (!confirm(`Delete ${selectedDrafts.size} draft(s)?`)) return
@@ -217,6 +227,12 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
                     className="text-primary-600 hover:text-primary-900"
                   >
                     Edit
+                  </button>
+                  <button
+                    onClick={() => handleDuplicate(draft)}
+                    className="text-blue-600 hover:text-blue-900"
+                  >
+                    Duplicate
                   </button>
                   <button
                     onClick={() => handlePublish(draft.id)}

@@ -26,6 +26,8 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
   const [type, setType] = useState(initialType)
   const [platforms, setPlatforms] = useState<Platform[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [scheduleDate, setScheduleDate] = useState('')
+  const [scheduleTime, setScheduleTime] = useState('')
 
   const handlePlatformToggle = (platform: Platform) => {
     setPlatforms((prev) =>
@@ -151,6 +153,8 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
       setMediaUrl('')
       setType('')
       setPlatforms([])
+      setScheduleDate('')
+      setScheduleTime('')
 
       setTimeout(() => {
         router.push('/dashboard')
@@ -158,6 +162,73 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
     } catch (error) {
       console.error('Error publishing:', error)
       showToast(error instanceof Error ? error.message : 'Failed to publish', 'error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSchedulePost = async () => {
+    if (!text.trim()) {
+      showToast('Please enter some content', 'error')
+      return
+    }
+
+    if (platforms.length === 0) {
+      showToast('Please select at least one platform', 'error')
+      return
+    }
+
+    if (!validation.valid) {
+      showToast(validation.errors[0], 'error')
+      return
+    }
+
+    if (!scheduleDate || !scheduleTime) {
+      showToast('Please select a date and time to schedule', 'error')
+      return
+    }
+
+    const scheduledAt = new Date(`${scheduleDate}T${scheduleTime}`)
+    const now = new Date()
+
+    if (scheduledAt <= now) {
+      showToast('Scheduled time must be in the future', 'error')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const res = await fetch('/api/content/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          mediaUrl: mediaUrl || null,
+          type: type || null,
+          platforms,
+          scheduledAt: scheduledAt.toISOString(),
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to schedule post')
+      }
+
+      showToast(`Post scheduled for ${scheduledAt.toLocaleString()}!`, 'success')
+      setText('')
+      setMediaUrl('')
+      setType('')
+      setPlatforms([])
+      setScheduleDate('')
+      setScheduleTime('')
+
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
+    } catch (error) {
+      console.error('Error scheduling post:', error)
+      showToast('Failed to schedule post', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -270,19 +341,60 @@ export default function CreateForm({ initialText = '', initialType = '' }: Creat
           </select>
         </div>
 
+        {/* Schedule Options */}
+        <div className="border-t pt-6">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Schedule for Later (Optional)
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="scheduleDate" className="block text-xs text-gray-600 mb-1">
+                Date
+              </label>
+              <input
+                type="date"
+                id="scheduleDate"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border p-2"
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div>
+              <label htmlFor="scheduleTime" className="block text-xs text-gray-600 mb-1">
+                Time
+              </label>
+              <input
+                type="time"
+                id="scheduleTime"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border p-2"
+                value={scheduleTime}
+                onChange={(e) => setScheduleTime(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
-        <div className="flex space-x-4">
+        <div className="grid grid-cols-3 gap-3">
           <button
             onClick={handleSaveDraft}
             disabled={isSubmitting}
-            className="flex-1 inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
           >
-            Save as Draft
+            Save Draft
+          </button>
+          <button
+            onClick={handleSchedulePost}
+            disabled={isSubmitting || !validation.valid || !scheduleDate || !scheduleTime}
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+          >
+            {isSubmitting ? 'Scheduling...' : 'Schedule'}
           </button>
           <button
             onClick={handlePostNow}
             disabled={isSubmitting || !validation.valid}
-            className="flex-1 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
           >
             {isSubmitting ? 'Publishing...' : 'Post Now'}
           </button>
