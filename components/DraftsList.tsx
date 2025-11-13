@@ -24,6 +24,20 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
   const { showToast } = useToast()
   const [selectedDrafts, setSelectedDrafts] = useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState<string>('all')
+  const [typeFilter, setTypeFilter] = useState<string>('all')
+
+  // Filter drafts based on search and filters
+  const filteredDrafts = drafts.filter((draft) => {
+    const matchesSearch = draft.text.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesPlatform = platformFilter === 'all' || draft.platform === platformFilter
+    const matchesType = typeFilter === 'all' || draft.type === typeFilter
+    return matchesSearch && matchesPlatform && matchesType
+  })
+
+  // Get unique types for filter dropdown
+  const uniqueTypes = Array.from(new Set(drafts.map((d) => d.type).filter(Boolean))) as string[]
 
   const handleEdit = (draft: Draft) => {
     const params = new URLSearchParams({
@@ -123,10 +137,10 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
   }
 
   const toggleSelectAll = () => {
-    if (selectedDrafts.size === drafts.length) {
+    if (selectedDrafts.size === filteredDrafts.length && filteredDrafts.length > 0) {
       setSelectedDrafts(new Set())
     } else {
-      setSelectedDrafts(new Set(drafts.map(d => d.id)))
+      setSelectedDrafts(new Set(filteredDrafts.map(d => d.id)))
     }
   }
 
@@ -153,9 +167,85 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
 
   return (
     <div className="space-y-4">
+      {/* Search and Filter Bar */}
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {/* Search Input */}
+          <div className="sm:col-span-1">
+            <label htmlFor="search" className="sr-only">
+              Search drafts
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="Search drafts..."
+              />
+            </div>
+          </div>
+
+          {/* Platform Filter */}
+          <div>
+            <label htmlFor="platform-filter" className="sr-only">
+              Filter by platform
+            </label>
+            <select
+              id="platform-filter"
+              value={platformFilter}
+              onChange={(e) => setPlatformFilter(e.target.value)}
+              className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            >
+              <option value="all">All Platforms</option>
+              <option value="x">X (Twitter)</option>
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+            </select>
+          </div>
+
+          {/* Type Filter */}
+          <div>
+            <label htmlFor="type-filter" className="sr-only">
+              Filter by type
+            </label>
+            <select
+              id="type-filter"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            >
+              <option value="all">All Types</option>
+              {uniqueTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Results Count */}
+        {(searchQuery || platformFilter !== 'all' || typeFilter !== 'all') && (
+          <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            Showing {filteredDrafts.length} of {drafts.length} drafts
+          </div>
+        )}
+      </div>
+
       {selectedDrafts.size > 0 && (
-        <div className="bg-white shadow rounded-lg p-4 flex items-center justify-between">
-          <span className="text-sm text-gray-700">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 flex items-center justify-between">
+          <span className="text-sm text-gray-700 dark:text-gray-300">
             {selectedDrafts.size} draft(s) selected
           </span>
           <button
@@ -168,14 +258,21 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
         </div>
       )}
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
+      {filteredDrafts.length === 0 && drafts.length > 0 ? (
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            No drafts match your search criteria.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left">
                 <input
                   type="checkbox"
-                  checked={selectedDrafts.size === drafts.length && drafts.length > 0}
+                  checked={selectedDrafts.size === filteredDrafts.length && filteredDrafts.length > 0}
                   onChange={toggleSelectAll}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
@@ -197,8 +294,8 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {drafts.map((draft) => (
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {filteredDrafts.map((draft) => (
               <tr key={draft.id} className={selectedDrafts.has(draft.id) ? 'bg-primary-50' : ''}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <input
@@ -251,7 +348,8 @@ export default function DraftsList({ drafts }: { drafts: Draft[] }) {
             ))}
           </tbody>
         </table>
-      </div>
+        </div>
+      )}
     </div>
   )
 }

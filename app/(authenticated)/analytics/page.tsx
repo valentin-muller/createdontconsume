@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AnalyticsCharts from '@/components/AnalyticsCharts'
 import PlatformBreakdown from '@/components/PlatformBreakdown'
+import ExportAnalyticsButton from '@/components/ExportAnalyticsButton'
 
 export default async function AnalyticsPage() {
   const session = await getSession()
@@ -38,7 +39,7 @@ export default async function AnalyticsPage() {
     },
   })
 
-  // Get engagement metrics
+  // Get engagement metrics (including all data for export)
   const contentWithMetrics = await prisma.contentItem.findMany({
     where: {
       userId: session.userId,
@@ -46,6 +47,21 @@ export default async function AnalyticsPage() {
     },
     include: {
       metrics: true,
+    },
+    select: {
+      id: true,
+      platform: true,
+      type: true,
+      text: true,
+      publishedAt: true,
+      metrics: {
+        select: {
+          impressions: true,
+          likes: true,
+          shares: true,
+          comments: true,
+        },
+      },
     },
   })
 
@@ -76,10 +92,18 @@ export default async function AnalyticsPage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center sm:justify-between">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Analytics</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Analytics</h1>
+          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Track your content performance and growth over time.
           </p>
+        </div>
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <ExportAnalyticsButton
+            data={{
+              posts: contentWithMetrics,
+              dailyMetrics: dailyMetrics,
+            }}
+          />
         </div>
       </div>
 
