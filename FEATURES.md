@@ -2,7 +2,7 @@
 
 ## 🎉 What's Been Built
 
-Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform with **12 major features**. Here's everything that's been added:
+Welcome home! While you were driving, I've transformed your MVP into a **production-ready** creator platform with **15 major features**. Here's everything that's been added:
 
 ---
 
@@ -246,6 +246,70 @@ Welcome home! While you were driving, I've transformed your MVP into a **product
   - Thread metadata preserved
 
 **Why it matters:** Perfect for X/Twitter threads, Instagram carousels, or YouTube video series. Create coherent multi-part narratives without switching contexts.
+
+---
+
+### 13. 🌙 Dark Mode
+**What it is:** System-wide dark theme toggle for comfortable viewing in any lighting condition.
+
+**Features:**
+- **Theme persistence** - Choice saved in localStorage
+- **System preference detection** - Auto-detects OS dark mode preference
+- **Toggle in navigation** - Sun/moon icon button
+- **Comprehensive coverage:**
+  - Navigation and layout
+  - All pages and components
+  - Forms and inputs
+  - Cards and tables
+- **Smooth transitions** - No flash of wrong theme on load
+- **Tailwind dark mode** - Class-based dark mode support
+
+**Why it matters:** Reduces eye strain during long content creation sessions and provides modern UX expected by users.
+
+---
+
+### 14. 📊 CSV Export
+**What it is:** Export all analytics data to CSV files for external analysis.
+
+**Features:**
+- **Two export files:**
+  - Posts CSV (ID, platform, type, content, timestamps, metrics)
+  - Daily metrics CSV (date, platform, followers, impressions, likes)
+- **Proper CSV formatting:**
+  - Special character escaping
+  - Quote handling
+  - Comma-safe values
+- **Date-stamped filenames** - Easy organization
+- **One-click export** - Button in analytics header
+- **Toast confirmation** - Success/error feedback
+- **Complete data** - All metrics included (impressions, likes, shares, comments)
+
+**Why it matters:** Enables deep analysis in Excel/Sheets, backup of analytics data, and custom reporting.
+
+---
+
+### 15. 🔍 Search & Filter for Drafts
+**What it is:** Powerful search and filtering to quickly find specific drafts.
+
+**Features:**
+- **Real-time text search:**
+  - Search across all draft content
+  - Instant results as you type
+  - Case-insensitive matching
+- **Platform filter:**
+  - Filter by X, Instagram, or YouTube
+  - "All Platforms" option
+- **Type filter:**
+  - Dynamic dropdown based on your content types
+  - Filter by post type (tutorial, promotion, etc.)
+- **Multi-filter support** - Combine search with filters
+- **Results counter** - Shows filtered count vs total
+- **Empty state** - Clear message when no matches
+- **Preserves functionality:**
+  - Select all works with filtered results
+  - Batch operations on filtered subset
+
+**Why it matters:** Essential for managing large draft collections. Find specific content instantly instead of scrolling through dozens of drafts.
 
 ---
 
@@ -493,8 +557,9 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 ### Short-term (Next week)
 - [ ] Add real OAuth for X/Instagram/YouTube
 - [ ] Implement automated scheduled post publishing
-- [ ] Export analytics to CSV
+- [x] Export analytics to CSV ✅
 - [ ] Add thread view on dashboard
+- [ ] Mobile responsive design improvements
 
 ### Long-term (Next month)
 - [ ] Team collaboration features
@@ -506,10 +571,11 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 
 ## 📊 Stats
 
-- **Total Features:** 12 major features
-- **Total Files:** 70+
-- **New Components:** 14 (Toast, Templates, Calendar, Thread, Charts, Quick Stats, Skeletons, etc.)
+- **Total Features:** 15 major features
+- **Total Files:** 75+
+- **New Components:** 17 (Toast, Templates, Calendar, Thread, Charts, Quick Stats, Skeletons, ThemeToggle, ExportButton, etc.)
 - **New Pages:** 3 (Analytics, Drafts, Calendar)
+- **New Contexts:** 2 (Toast, Theme)
 - **API Endpoints:** 15+
 - **Templates:** 12 pre-made templates
 - **Loading States:** 5 skeleton components
@@ -517,6 +583,7 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 - **Chart Types:** 3 animated charts
 - **Notification Types:** 4 toast types
 - **Navigation Sections:** 7 main sections
+- **Dark Mode:** Full app coverage
 
 ---
 
@@ -534,15 +601,21 @@ This is now a solid MVP with production-ready features. Here are suggested next 
 10. **Track Your Streak:** Post consistently to build and maintain your streak
 11. **Use the Calendar:** Review your calendar weekly to spot gaps in your posting schedule
 12. **Create Threads:** Use thread mode for long-form content that needs multiple posts
+13. **Toggle Dark Mode:** Switch to dark mode during evening sessions to reduce eye strain
+14. **Export Your Data:** Regularly export analytics to CSV for backup and external analysis
+15. **Search Drafts:** Use platform and type filters to organize and find drafts faster
 
 ---
 
 ## 🙏 Final Notes
 
-This MVP now has **12 major features** including:
+This MVP now has **15 major features** including:
 - **Scheduled Posts** for planning ahead
 - **Content Calendar** for visual planning
 - **Thread Composer** for multi-post narratives
+- **Dark Mode** for comfortable viewing
+- **CSV Export** for data backup and analysis
+- **Search & Filter** for managing drafts
 - **Quick Stats Widget** for weekly motivation
 - **Duplicate Feature** for content repurposing
 - **Loading States** for professional UX
@@ -560,15 +633,17 @@ Everything is committed and pushed to your branch:
 2. Production-ready features (toast, drafts, analytics, limits, templates)
 3. Feature documentation
 4. Scheduled posts, quick stats, duplicate, loading states
-5. **NEW: Content Calendar and Thread Composer**
+5. Content Calendar and Thread Composer
+6. **NEW: Dark Mode, CSV Export, and Search/Filter**
 
 **You can now:**
 1. Pull the latest changes
 2. Run `npm install && npm run db:push && npm run db:seed`
-3. Start creating, scheduling, and planning content with threads and calendar!
+3. Start creating with dark mode, exporting analytics, and searching through drafts!
+4. Plan content on the calendar, compose threads, and schedule posts!
 
 ---
 
 **Create. Don't Consume.** 🚀
 
-Your creator platform is now production-ready with scheduling, calendar planning, thread composition, analytics, and smart workflows!
+Your creator platform is now production-ready with 15 major features including dark mode, scheduling, calendar planning, thread composition, CSV export, search/filter, analytics, and smart workflows!
