@@ -1,0 +1,90 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  settings          String?  // JSON stored as string for SQLite
+
+  contentItems      ContentItem[]
+  ideas             Idea[]
+  dailyMetrics      DailyMetric[]
+  streak            Streak?
+}
+
+model Idea {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  text      String
+  type      String?  // e.g. "tweet", "reel", etc.
+  createdAt DateTime @default(now())
+}
+
+model ContentItem {
+  id            String   @id @default(cuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+
+  platform      String   // "x", "instagram", "youtube"
+  status        String   // "draft", "scheduled", "published", "failed"
+  type          String?  // "short", "reel", "short_video", etc.
+  text          String
+  mediaUrl      String?  // placeholder
+
+  scheduledAt   DateTime?
+  publishedAt   DateTime?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  metrics       PostMetric?
+}
+
+model PostMetric {
+  id            String       @id @default(cuid())
+  contentItem   ContentItem  @relation(fields: [contentItemId], references: [id])
+  contentItemId String @unique
+
+  impressions   Int    @default(0)
+  likes         Int    @default(0)
+  comments      Int    @default(0)
+  shares        Int    @default(0)
+}
+
+model DailyMetric {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  platform    String   // "x", "instagram", "youtube"
+  date        DateTime
+
+  followers   Int      @default(0)
+  impressions Int      @default(0)
+  likes       Int      @default(0)
+  comments    Int      @default(0)
+  shares      Int      @default(0)
+
+  @@unique([userId, platform, date])
+}
+
+model Streak {
+  id                 String   @id @default(cuid())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String   @unique
+
+  currentStreakDays  Int      @default(0)
+  longestStreakDays  Int      @default(0)
+  lastActivityDate   DateTime?
+}

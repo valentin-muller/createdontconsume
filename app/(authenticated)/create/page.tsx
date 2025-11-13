@@ -1,0 +1,32 @@
+import { getSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import CreateForm from '@/components/CreateForm'
+
+export default async function CreatePage({
+  searchParams,
+}: {
+  searchParams: { text?: string; type?: string }
+}) {
+  const session = await getSession()
+
+  if (!session) {
+    redirect('/login')
+  }
+
+  return (
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-2xl font-semibold text-gray-900">Create Content</h1>
+          <p className="mt-2 text-sm text-gray-700">
+            Compose and publish your content to multiple platforms.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <CreateForm initialText={searchParams.text} initialType={searchParams.type} />
+      </div>
+    </div>
+  )
+}
